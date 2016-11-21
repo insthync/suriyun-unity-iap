@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Purchasing;
 
-namespace Suriyun.MultiplayerRPG
+namespace Suriyun.UnityIAP
 {
     [System.Serializable]
     public class InAppProductID

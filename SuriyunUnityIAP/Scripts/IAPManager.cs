@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Purchasing;
-using System;
 
-namespace Suriyun.MultiplayerRPG
+namespace Suriyun.UnityIAP
 {
     public class IAPManager : MonoBehaviour, IStoreListener
     {

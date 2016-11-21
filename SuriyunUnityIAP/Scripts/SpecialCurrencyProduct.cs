@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.Purchasing;
 
-namespace Suriyun.MultiplayerRPG
+namespace Suriyun.UnityIAP
 {
     public class SpecialCurrencyProduct : ScriptableObject
     {
