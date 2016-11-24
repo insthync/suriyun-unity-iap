@@ -2,10 +2,9 @@
 
 namespace Suriyun.UnityIAP
 {
-    public class SpecialCurrencyProduct : ScriptableObject
+    public class BaseIAPProduct : ScriptableObject
     {
         public string id;
         public InAppProductID[] storeIDs;
-        public int currencyAmount;
     }
 }

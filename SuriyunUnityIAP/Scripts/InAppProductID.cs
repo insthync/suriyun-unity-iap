@@ -5,13 +5,6 @@ namespace Suriyun.UnityIAP
     [System.Serializable]
     public class InAppProductID
     {
-        public enum IAPPlatform
-        {
-            GooglePlay,
-            AppleAppStore,
-            WindowsStore
-        }
-
         public string id;
         public IAPPlatform platform;
 

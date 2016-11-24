@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Purchasing;
-
+using System.Collections.Generic;
 namespace Suriyun.UnityIAP
 {
     public class IAPManager : MonoBehaviour, IStoreListener
     {
-        public SpecialCurrencyProduct[] specialCurrencyProducts;
+        public BaseIAPProduct[] iapProducts;
         public delegate void OnInitializedEvent(IStoreController controller, IExtensionProvider extensions);
         public delegate void OnInitializeFailedEvent(InitializationFailureReason error);
         public delegate void OnPurchaseFailedEvent(Product i, PurchaseFailureReason p);
@@ -14,16 +14,33 @@ namespace Suriyun.UnityIAP
         public OnInitializeFailedEvent onInitializeFailed;
         public OnPurchaseFailedEvent onPurchaseFailed;
         public ProcessPurchaseEvent processPurchase;
-        public IAPManager instance { get; protected set; }
-        
+        public static IAPManager Instance { get; protected set; }
+
+        protected Dictionary<string, BaseIAPProduct> _iapProducts;
+        public Dictionary<string, BaseIAPProduct> IAPProducts
+        {
+            get
+            {
+                if (_iapProducts == null)
+                {
+                    _iapProducts = new Dictionary<string, BaseIAPProduct>();
+                    foreach (BaseIAPProduct iapProduct in iapProducts)
+                    {
+                        _iapProducts.Add(iapProduct.id, iapProduct);
+                    }
+                }
+                return _iapProducts;
+            }
+        }
+
         void Awake()
         {
-            if (instance != null)
+            if (Instance != null)
             {
                 Destroy(gameObject);
                 return;
             }
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
 
@@ -31,7 +48,7 @@ namespace Suriyun.UnityIAP
         {
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
-            foreach (var product in specialCurrencyProducts)
+            foreach (var product in iapProducts)
             {
                 var storeIDs = new IDs();
                 foreach (var storeId in product.storeIDs)
