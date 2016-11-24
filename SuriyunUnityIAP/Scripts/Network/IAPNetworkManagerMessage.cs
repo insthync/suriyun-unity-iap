@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 
 namespace Suriyun.UnityIAP
 {
-    public class IAPNetworkManagerMessage : MonoBehaviour
+    public class IAPNetworkManagerMessage
     {
         public enum ServerBuyProductFail
         {
