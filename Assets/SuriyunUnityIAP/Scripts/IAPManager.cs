@@ -43,7 +43,7 @@ namespace Suriyun.UnityIAP
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-
+        
         void SetupProducts()
         {
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
