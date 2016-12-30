@@ -15,9 +15,10 @@ namespace Suriyun.UnityIAP
         }
         public static System.Action<NetworkMessage, BaseIAPProduct> onBuyProductSuccess;
         public static System.Action<NetworkMessage, ServerBuyProductFail> onBuyProductFail;
-        public static void OnServerBuyProduct(NetworkMessage netMsg)
+        public static System.Action<List<BaseIAPProduct>> onClientProductsResponse;
+        public static void OnServerBuyProduct<T>(NetworkMessage netMsg) where T : BaseIAPProduct
         {
-            BaseIAPProduct iapProduct = null;
+            T iapProduct = null;
             ServerBuyProductFail fail = ServerBuyProductFail.None;
             if (ValidateIAP(netMsg, out iapProduct, out fail))
             {
@@ -43,7 +44,7 @@ namespace Suriyun.UnityIAP
             string storeId = msg.storeId;
             string receipt = msg.receipt;
             string transactionId = msg.transactionId;
-            if (IAPManager<T>.Instance.IAPProducts.TryGetValue(productId, out iapProduct))
+            if (IAPManager<T>.Instance.ConsumableProducts.TryGetValue(productId, out iapProduct))
                 return true;
             else
                 fail = ServerBuyProductFail.NoProduct;
@@ -55,7 +56,7 @@ namespace Suriyun.UnityIAP
             MsgRequestProductsFromClient msg = netMsg.ReadMessage<MsgRequestProductsFromClient>();
             // TODO: May receive type of list via message
             List<T> iapProducts = new List<T>();
-            var keyValueList = IAPManager<T>.Instance.IAPProducts.GetEnumerator();
+            var keyValueList = IAPManager<T>.Instance.ConsumableProducts.GetEnumerator();
             while (keyValueList.MoveNext())
                 iapProducts.Add(keyValueList.Current.Value as T);
 
@@ -71,13 +72,24 @@ namespace Suriyun.UnityIAP
         {
             MsgResponseProductsFromServer msg = netMsg.ReadMessage<MsgResponseProductsFromServer>();
             IAPProducts<T> productsList = JsonUtility.FromJson<IAPProducts<T>>(msg.jsonProducts);
-            IAPManager<T>.Instance.RaiseOnClientProductsResponse(productsList.iapProducts);
+            if (onClientProductsResponse != null)
+                onClientProductsResponse(productsList.ToBaseList());
         }
 
         [System.Serializable]
         public struct IAPProducts<T> where T : BaseIAPProduct
         {
             public List<T> iapProducts;
+
+            public List<BaseIAPProduct> ToBaseList()
+            {
+                List<BaseIAPProduct> baseList = new List<BaseIAPProduct>();
+                foreach (var product in iapProducts)
+                {
+                    baseList.Add(product);
+                }
+                return baseList;
+            }
         }
     }
 }

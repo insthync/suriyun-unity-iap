@@ -6,6 +6,8 @@ namespace Suriyun.UnityIAP
         Unknow,
         GooglePlay,
         AppleAppStore,
-        WindowsStore
+        WindowsStore,
+        TizenStore,
+        MacAppStore
     }
 }

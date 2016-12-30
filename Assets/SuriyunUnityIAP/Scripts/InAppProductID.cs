@@ -18,6 +18,10 @@ namespace Suriyun.UnityIAP
                     return GooglePlay.Name;
                 case IAPPlatform.WindowsStore:
                     return WindowsStore.Name;
+                case IAPPlatform.TizenStore:
+                    return TizenStore.Name;
+                case IAPPlatform.MacAppStore:
+                    return MacAppStore.Name;
             }
             return string.Empty;
         }
