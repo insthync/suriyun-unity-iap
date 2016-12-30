@@ -2,6 +2,7 @@
 
 namespace Suriyun.UnityIAP
 {
+    [System.Serializable]
     public class BaseIAPProduct : ScriptableObject
     {
         public string id;

@@ -3,28 +3,30 @@ using UnityEngine.Purchasing;
 using System.Collections.Generic;
 namespace Suriyun.UnityIAP
 {
-    public class IAPManager : MonoBehaviour, IStoreListener
+    abstract public class IAPManager<T> : MonoBehaviour, IStoreListener where T : BaseIAPProduct
     {
-        public BaseIAPProduct[] iapProducts;
+        public T[] iapProducts;
         public delegate void OnInitializedEvent(IStoreController controller, IExtensionProvider extensions);
         public delegate void OnInitializeFailedEvent(InitializationFailureReason error);
         public delegate void OnPurchaseFailedEvent(Product i, PurchaseFailureReason p);
         public delegate PurchaseProcessingResult ProcessPurchaseEvent(PurchaseEventArgs e);
+        public delegate void OnClientProductsResponse(List<T> products);
         public OnInitializedEvent onInitialized;
         public OnInitializeFailedEvent onInitializeFailed;
         public OnPurchaseFailedEvent onPurchaseFailed;
         public ProcessPurchaseEvent processPurchase;
-        public static IAPManager Instance { get; protected set; }
+        public OnClientProductsResponse onClientProductsResponse;
+        public static IAPManager<T> Instance { get; protected set; }
 
-        protected Dictionary<string, BaseIAPProduct> _iapProducts;
-        public Dictionary<string, BaseIAPProduct> IAPProducts
+        protected Dictionary<string, T> _iapProducts;
+        public Dictionary<string, T> IAPProducts
         {
             get
             {
                 if (_iapProducts == null)
                 {
-                    _iapProducts = new Dictionary<string, BaseIAPProduct>();
-                    foreach (BaseIAPProduct iapProduct in iapProducts)
+                    _iapProducts = new Dictionary<string, T>();
+                    foreach (T iapProduct in iapProducts)
                     {
                         _iapProducts.Add(iapProduct.id, iapProduct);
                     }
@@ -85,6 +87,12 @@ namespace Suriyun.UnityIAP
                 return processPurchase(e);
 
             return PurchaseProcessingResult.Complete;
+        }
+
+        public void RaiseOnClientProductsResponse(List<T> productList)
+        {
+            if (onClientProductsResponse != null)
+                onClientProductsResponse(productList);
         }
     }
 }
