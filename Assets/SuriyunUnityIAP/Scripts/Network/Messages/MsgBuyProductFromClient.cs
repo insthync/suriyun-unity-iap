@@ -11,5 +11,6 @@ namespace Suriyun.UnityIAP
         public string storeId = string.Empty;
         public string receipt = string.Empty;
         public string transactionId = string.Empty;
+        public string gameSecretKey = string.Empty;
     }
 }

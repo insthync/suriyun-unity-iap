@@ -13,28 +13,28 @@ namespace Suriyun.UnityIAP
             NoProduct,
             ValidateFail
         }
-        public static System.Action<NetworkMessage, BaseIAPProduct> onBuyProductSuccess;
-        public static System.Action<NetworkMessage, ServerBuyProductFail> onBuyProductFail;
+        public static System.Action<NetworkConnection, MsgBuyProductFromClient, BaseIAPProduct> onBuyProductSuccess;
+        public static System.Action<NetworkConnection, MsgBuyProductFromClient, ServerBuyProductFail> onBuyProductFail;
         public static System.Action<List<BaseIAPProduct>> onClientProductsResponse;
         public static void OnServerBuyProduct<T>(NetworkMessage netMsg) where T : BaseIAPProduct
         {
             T iapProduct = null;
             ServerBuyProductFail fail = ServerBuyProductFail.None;
-            if (ValidateIAP(netMsg, out iapProduct, out fail))
+            MsgBuyProductFromClient msg = netMsg.ReadMessage<MsgBuyProductFromClient>();
+            if (ValidateIAP(msg, out iapProduct, out fail))
             {
                 if (onBuyProductSuccess != null)
-                    onBuyProductSuccess(netMsg, iapProduct);
+                    onBuyProductSuccess(netMsg.conn, msg, iapProduct);
             }
             else
             {
                 if (onBuyProductFail != null)
-                    onBuyProductFail(netMsg, fail);
+                    onBuyProductFail(netMsg.conn, msg, fail);
             }
         }
 
-        public static bool ValidateIAP<T>(NetworkMessage netMsg, out T iapProduct, out ServerBuyProductFail fail) where T : BaseIAPProduct
+        public static bool ValidateIAP<T>(MsgBuyProductFromClient msg, out T iapProduct, out ServerBuyProductFail fail) where T : BaseIAPProduct
         {
-            MsgBuyProductFromClient msg = netMsg.ReadMessage<MsgBuyProductFromClient>();
             iapProduct = null;
             fail = ServerBuyProductFail.None;
             // Variables from message
