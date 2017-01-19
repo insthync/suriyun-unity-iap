@@ -38,12 +38,7 @@ namespace Suriyun.UnityIAP
             iapProduct = null;
             fail = ServerBuyProductFail.None;
             // Variables from message
-            string userId = msg.userId;
             string productId = msg.productId;
-            IAPPlatform platform = msg.platform;
-            string storeId = msg.storeId;
-            string receipt = msg.receipt;
-            string transactionId = msg.transactionId;
             if (IAPManager<T>.Instance.ConsumableProducts.TryGetValue(productId, out iapProduct))
                 return true;
             else
@@ -53,8 +48,8 @@ namespace Suriyun.UnityIAP
 
         public static void OnServerProductsRequest<T>(NetworkMessage netMsg) where T : BaseIAPProduct
         {
-            MsgRequestProductsFromClient msg = netMsg.ReadMessage<MsgRequestProductsFromClient>();
             // TODO: May receive type of list via message
+            MsgRequestProductsFromClient msg = netMsg.ReadMessage<MsgRequestProductsFromClient>();
             List<T> iapProducts = new List<T>();
             var keyValueList = IAPManager<T>.Instance.ConsumableProducts.GetEnumerator();
             while (keyValueList.MoveNext())

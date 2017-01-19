@@ -3,7 +3,7 @@ using UnityEngine.Purchasing;
 using System.Collections.Generic;
 namespace Suriyun.UnityIAP
 {
-    abstract public class IAPManager<T> : MonoBehaviour, IStoreListener where T : BaseIAPProduct
+    public abstract class IAPManager<T> : MonoBehaviour, IStoreListener where T : BaseIAPProduct
     {
         public T[] consumableProductList;
         public delegate void OnInitializedEvent(IStoreController controller, IExtensionProvider extensions);
