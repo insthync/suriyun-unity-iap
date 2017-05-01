@@ -1,4 +1,6 @@
-﻿using UnityEngine.Purchasing;
+﻿#if USE_IAP
+using UnityEngine.Purchasing;
+#endif
 
 namespace Suriyun.UnityIAP
 {
@@ -10,6 +12,7 @@ namespace Suriyun.UnityIAP
 
         public string GetPlatformName()
         {
+#if USE_IAP
             switch (platform)
             {
                 case IAPPlatform.AppleAppStore:
@@ -23,6 +26,7 @@ namespace Suriyun.UnityIAP
                 case IAPPlatform.MacAppStore:
                     return MacAppStore.Name;
             }
+#endif
             return string.Empty;
         }
     }

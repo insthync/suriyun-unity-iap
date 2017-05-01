@@ -1,23 +1,31 @@
 ﻿using UnityEngine;
+#if USE_IAP
 using UnityEngine.Purchasing;
+#endif
 using System.Collections.Generic;
 namespace Suriyun.UnityIAP
 {
+#if USE_IAP
     public abstract class IAPManager<T> : MonoBehaviour, IStoreListener where T : BaseIAPProduct
+#else
+    public abstract class IAPManager<T> : MonoBehaviour where T : BaseIAPProduct
+#endif
     {
+        public static IAPManager<T> Instance { get; protected set; }
         public T[] consumableProductList;
+#if USE_IAP
         public delegate void OnInitializedEvent(IStoreController controller, IExtensionProvider extensions);
         public delegate void OnInitializeFailedEvent(InitializationFailureReason error);
         public delegate void OnPurchaseFailedEvent(Product i, PurchaseFailureReason p);
         public delegate PurchaseProcessingResult ProcessPurchaseEvent(PurchaseEventArgs args);
         public delegate void OnProcessPurchaseEvent(T product, PurchaseEventArgs args, PurchaseProcessingResult result);
+        protected IStoreController storeController;
         public OnInitializedEvent onInitialized;
         public OnInitializeFailedEvent onInitializeFailed;
         public OnPurchaseFailedEvent onPurchaseFailed;
         public ProcessPurchaseEvent processPurchase;
         public OnProcessPurchaseEvent onProcessPurchase;
-        public static IAPManager<T> Instance { get; protected set; }
-        protected IStoreController storeController;
+#endif
         protected Dictionary<string, T> consumableProducts;
         public Dictionary<string, T> ConsumableProducts
         {
@@ -48,6 +56,7 @@ namespace Suriyun.UnityIAP
         
         public void SetupProducts()
         {
+#if USE_IAP
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
             foreach (var product in consumableProductList)
@@ -61,13 +70,17 @@ namespace Suriyun.UnityIAP
             }
 
             UnityPurchasing.Initialize(this, builder);
+#endif
         }
 
         public void BuyProduct(T product)
         {
+#if USE_IAP
             storeController.products.WithID(product.id);
+#endif
         }
 
+#if USE_IAP
         public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
         {
             if (onInitialized != null)
@@ -102,6 +115,7 @@ namespace Suriyun.UnityIAP
 
             return result;
         }
+#endif
 
         public static IAPPlatform GetCurrentPlatform()
         {
